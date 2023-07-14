@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo_hive/screens/todo_details_screen.dart';
+
+import '../models/todo.dart';
 
 class ToDoTile extends StatelessWidget {
   ToDoTile({
@@ -9,8 +12,9 @@ class ToDoTile extends StatelessWidget {
     required this.onChanged,
     required this.taskCompleted,
     required this.deleteFunction,
+    required this.todoModel,
   });
-
+  final Todo todoModel;
   final String taskName;
   final String taskDesc;
   final bool taskCompleted;
@@ -50,6 +54,9 @@ class ToDoTile extends StatelessWidget {
                 checkColor: Colors.yellow,
               ),
               InkWell(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TodoDetailsScreen(todoModel: todoModel),
+                )),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

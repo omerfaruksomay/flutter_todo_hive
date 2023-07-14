@@ -19,26 +19,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     if (_myBox.get("TODOLIST") == null) {
       db.createInitialData();
     } else {
       db.loadData();
     }
-    super.initState();
   }
 
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
 
-  void checkBoxChanged(bool? value, int index) {
-    final todoModel = Todo.fromJson(db.toDoList[index]);
-    print(todoModel);
+  void checkBoxChanged(bool? values, int index) {
     setState(() {
-      todoModel.taskCompleted = !todoModel.taskCompleted;
+      db.toDoList[index].taskCompleted = values!;
     });
-    print(todoModel);
-    db.updateDatabase();
   }
 
   void addNewTask() {
@@ -47,10 +42,8 @@ class _HomePageState extends State<HomePage> {
       desc: _descController.text,
     );
 
-    final jsonModel = todoModel.toJson();
-
     setState(() {
-      db.toDoList.add(jsonModel);
+      db.toDoList.add(todoModel);
     });
     _descController.clear();
     _titleController.clear();
@@ -102,8 +95,9 @@ class _HomePageState extends State<HomePage> {
           : ListView.builder(
               itemCount: db.toDoList.length,
               itemBuilder: (context, index) {
-                final model = Todo.fromJson(db.toDoList[index]);
+                var model = db.toDoList[index];
                 return ToDoTile(
+                  todoModel: model,
                   taskName: model.title,
                   taskDesc: model.desc,
                   taskCompleted: model.taskCompleted,
