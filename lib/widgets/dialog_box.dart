@@ -4,11 +4,13 @@ import 'package:todo_hive/widgets/custom_button.dart';
 class DialogBox extends StatelessWidget {
   DialogBox({
     super.key,
-    required this.controller,
+    required this.titleController,
+    required this.descController,
     required this.onCancel,
     required this.onSave,
   });
-  final controller;
+  final titleController;
+  final descController;
   VoidCallback onSave;
   VoidCallback onCancel;
 
@@ -17,14 +19,22 @@ class DialogBox extends StatelessWidget {
     return AlertDialog(
       backgroundColor: Colors.yellow[200],
       content: Container(
-        height: 120,
+        height: 200,
         child: Column(
           children: [
             TextField(
-              controller: controller,
+              controller: titleController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: "Add a new task",
+                hintText: "Task name",
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: descController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Task Description",
               ),
             ),
             Container(

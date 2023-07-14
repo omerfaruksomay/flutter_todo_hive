@@ -5,12 +5,14 @@ class ToDoTile extends StatelessWidget {
   ToDoTile({
     super.key,
     required this.taskName,
+    required this.taskDesc,
     required this.onChanged,
     required this.taskCompleted,
     required this.deleteFunction,
   });
 
   final String taskName;
+  final String taskDesc;
   final bool taskCompleted;
   Function(bool?)? onChanged;
   Function(BuildContext)? deleteFunction;
@@ -21,7 +23,7 @@ class ToDoTile extends StatelessWidget {
       padding: const EdgeInsets.only(top: 25.0, left: 20, right: 20),
       child: Slidable(
         endActionPane: ActionPane(
-          motion: StretchMotion(),
+          motion: const StretchMotion(),
           children: [
             SlidableAction(
               onPressed: deleteFunction,
@@ -47,13 +49,29 @@ class ToDoTile extends StatelessWidget {
                 activeColor: Colors.black,
                 checkColor: Colors.yellow,
               ),
-              Text(
-                taskName,
-                style: TextStyle(
-                  decoration: taskCompleted
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                  fontSize: 15,
+              InkWell(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      taskName,
+                      style: TextStyle(
+                        decoration: taskCompleted
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      taskDesc,
+                      style: TextStyle(
+                        decoration: taskCompleted
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

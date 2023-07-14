@@ -1,7 +1,7 @@
 import 'package:hive_flutter/adapters.dart';
 
 class TodoDatabase {
-  List toDoList = [];
+  List<String> toDoList = [];
 
   final _myBox = Hive.box('mybox');
 

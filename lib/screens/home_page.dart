@@ -4,6 +4,8 @@ import 'package:todo_hive/data/database.dart';
 import 'package:todo_hive/widgets/dialog_box.dart';
 import 'package:todo_hive/widgets/todo_tile.dart';
 
+import '../models/todo.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -26,18 +28,33 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  final _controller = TextEditingController();
+  final _titleController = TextEditingController();
+  final _descController = TextEditingController();
 
   void checkBoxChanged(bool? value, int index) {
+    final todoModel = Todo.fromJson(db.toDoList[index]);
+    print(todoModel);
     setState(() {
-      db.toDoList[index][1] = !db.toDoList[index][1];
+      todoModel.taskCompleted = !todoModel.taskCompleted;
     });
+    print(todoModel);
+    db.updateDatabase();
   }
 
   void addNewTask() {
+    final todoModel = Todo(
+      title: _titleController.text,
+      desc: _descController.text,
+    );
+
+    final jsonModel = todoModel.toJson();
+
     setState(() {
-      db.toDoList.add([_controller.text, false]);
+      db.toDoList.add(jsonModel);
     });
+    _descController.clear();
+    _titleController.clear();
+    db.updateDatabase();
     Navigator.of(context).pop();
   }
 
@@ -45,6 +62,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       db.toDoList.removeAt(index);
     });
+    db.updateDatabase();
   }
 
   void createNewTask() {
@@ -54,7 +72,8 @@ class _HomePageState extends State<HomePage> {
         return DialogBox(
           onSave: addNewTask,
           onCancel: () => Navigator.of(context).pop(),
-          controller: _controller,
+          titleController: _titleController,
+          descController: _descController,
         );
       },
     );
@@ -71,19 +90,28 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createNewTask,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-        itemCount: db.toDoList.length,
-        itemBuilder: (context, index) {
-          return ToDoTile(
-            taskName: db.toDoList[index][0],
-            onChanged: (value) => checkBoxChanged(value, index),
-            taskCompleted: db.toDoList[index][1],
-            deleteFunction: (context) => removeTask(index),
-          );
-        },
-      ),
+      body: db.toDoList.isEmpty
+          ? Center(
+              child: Text(
+                'Please add some todos!',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            )
+          : ListView.builder(
+              itemCount: db.toDoList.length,
+              itemBuilder: (context, index) {
+                final model = Todo.fromJson(db.toDoList[index]);
+                return ToDoTile(
+                  taskName: model.title,
+                  taskDesc: model.desc,
+                  taskCompleted: model.taskCompleted,
+                  onChanged: (value) => checkBoxChanged(value, index),
+                  deleteFunction: (context) => removeTask(index),
+                );
+              },
+            ),
     );
   }
 }
